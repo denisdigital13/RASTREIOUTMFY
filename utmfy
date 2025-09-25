@@ -14,7 +14,7 @@ app.post("/pipefy-webhook", async (req, res) => {
     await fetch("https://api.utmfy.com/conversions", {
       method: "POST",
       headers: {
-        "Authorization": `Bearer ${process.env.UTMFY_TOKEN}`,
+        "Authorization": `Bearer ${process.env.D93NgXnVsfb9QQAQFcIEXowaQ0I4515KcOWM}`,
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
