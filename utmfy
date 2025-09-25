@@ -1,0 +1,34 @@
+app.post("/pipefy-webhook", async (req, res) => {
+  try {
+    const card = req.body.data.card;
+
+    // capturar UTMs
+    const utm_source = card.fields.find(f => f.name === "utm_source")?.value;
+    const utm_medium = card.fields.find(f => f.name === "utm_medium")?.value;
+    const utm_campaign = card.fields.find(f => f.name === "utm_campaign")?.value;
+
+    // capturar o valor da conta de luz/kWh
+    const revenue = card.fields.find(f => f.name === "Valor da conta de luz/kWh")?.value || 0;
+
+    // enviar para UTMFY
+    await fetch("https://api.utmfy.com/conversions", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${process.env.UTMFY_TOKEN}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        utm_source,
+        utm_medium,
+        utm_campaign,
+        revenue,   // 👈 agora ele manda o valor da conta de luz/kWh
+        status: "Won"
+      })
+    });
+
+    res.status(200).send("Conversão registrada!");
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Erro ao processar webhook");
+  }
+});
